@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup><Configuration Condition="'$(Configuration)'==''">Release</Configuration><OutputType>WinExe</OutputType><TargetFrameworkVersion>v4.8</TargetFrameworkVersion><RootNamespace>SwitchMyAudio</RootNamespace><AssemblyName>SwitchMyAudio</AssemblyName><PlatformTarget>AnyCPU</PlatformTarget><Prefer32Bit>false</Prefer32Bit><OutputPath>dist\</OutputPath><Optimize>true</Optimize><ApplicationManifest>app.manifest</ApplicationManifest><ApplicationIcon>assets\app.ico</ApplicationIcon><AppConfig>app.config</AppConfig></PropertyGroup>
+  <PropertyGroup><GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute></PropertyGroup>
+  <ItemGroup><Reference Include="System"/><Reference Include="System.Core"/><Reference Include="System.Drawing"/><Reference Include="System.Windows.Forms"/><Reference Include="System.Xml"/></ItemGroup>
+  <ItemGroup><Content Include="LICENSE"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content></ItemGroup>
+  <ItemGroup><Compile Include="src\BuildInfo.cs"/></ItemGroup>
+  <ItemGroup><Compile Include="src\Model.cs"/><Compile Include="src\NativeAudio.cs"/><Compile Include="src\Hotkeys.cs"/><Compile Include="src\AppController.cs"/><Compile Include="src\Controls.cs"/><Compile Include="src\MainWindow.cs"/><Compile Include="src\PinnedWindow.cs"/><Compile Include="src\SettingsWindow.cs"/><Compile Include="src\ShortcutDialog.cs"/><Compile Include="src\Program.cs"/><Compile Include="src\Ui.cs"/></ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+</Project>

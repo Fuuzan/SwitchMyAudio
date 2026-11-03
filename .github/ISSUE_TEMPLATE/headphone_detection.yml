@@ -1,0 +1,42 @@
+name: Headphone detection
+description: Report a headset or receiver that does not auto-switch correctly.
+body:
+  - type: input
+    id: version
+    attributes:
+      label: App and Windows versions
+      placeholder: Switch My Audio 0.7.0; Windows 11 24H2
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Headset or receiver model
+      description: Use the manufacturer's model name, without personal aliases or serial numbers.
+    validations:
+      required: true
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection
+      options:
+        - USB wireless receiver
+        - Bluetooth
+        - USB cable
+        - Analog cable
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reconnect steps and result
+      description: Confirm Auto-switch headphones is on. Does the output disappear and return in Windows Sound settings? Does clicking Use select it? Describe what happened and what you expected.
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Shared USB product and interface identifiers (optional)
+      placeholder: VID_1234&PID_5678, MI_01
+      description: Include only VID/PID and optional MI portions from Hardware Ids. Omit device instance paths, serials, endpoint GUIDs, account names and settings files. Leave blank if unsure.

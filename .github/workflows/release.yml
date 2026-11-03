@@ -1,0 +1,114 @@
+name: Prepare GitHub release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 75
+    permissions:
+      contents: write
+      actions: read
+    env:
+      SIGNPATH_ENABLED: ${{ vars.SIGNPATH_ENABLED }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Validate optional signing configuration
+        if: env.SIGNPATH_ENABLED == 'true'
+        shell: pwsh
+        env:
+          SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
+          SIGNPATH_ORGANIZATION_ID: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          SIGNPATH_PROJECT_SLUG: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          SIGNPATH_SIGNING_POLICY_SLUG: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          SIGNPATH_APP_ARTIFACT_SLUG: ${{ vars.SIGNPATH_APP_ARTIFACT_SLUG }}
+          SIGNPATH_SETUP_ARTIFACT_SLUG: ${{ vars.SIGNPATH_SETUP_ARTIFACT_SLUG }}
+        run: |
+          foreach ($name in @('SIGNPATH_API_TOKEN','SIGNPATH_ORGANIZATION_ID','SIGNPATH_PROJECT_SLUG','SIGNPATH_SIGNING_POLICY_SLUG','SIGNPATH_APP_ARTIFACT_SLUG','SIGNPATH_SETUP_ARTIFACT_SLUG')) {
+            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) { throw "Missing signing configuration: $name" }
+          }
+      - name: Test and package
+        shell: pwsh
+        run: |
+          ./Test.ps1 -Stress -StressRounds 1000
+          ./Test.ps1 -Platform x86 -Artifacts artifacts-x86 -Stress
+          ./Release.ps1
+          $version = ([Version][Diagnostics.FileVersionInfo]::GetVersionInfo((Resolve-Path dist/SwitchMyAudio.exe)).FileVersion).ToString(3)
+          if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'The tag must match src/BuildInfo.cs.' }
+          if (-not (Test-Path LICENSE)) { throw 'Choose a license before publishing a public release.' }
+      - name: Upload application for signing
+        if: env.SIGNPATH_ENABLED == 'true'
+        id: unsigned-app
+        uses: actions/upload-artifact@v7
+        with:
+          name: unsigned-app
+          path: dist/SwitchMyAudio.exe
+          if-no-files-found: error
+      - name: Sign application
+        if: env.SIGNPATH_ENABLED == 'true'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_APP_ARTIFACT_SLUG }}
+          github-artifact-id: ${{ steps.unsigned-app.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 1800
+          output-artifact-directory: signed-app
+      - name: Package the signed application without rebuilding it
+        if: env.SIGNPATH_ENABLED == 'true'
+        shell: pwsh
+        run: |
+          $signed = 'signed-app/SwitchMyAudio.exe'
+          if ((Get-AuthenticodeSignature -LiteralPath $signed).Status -ne 'Valid') { throw 'Application signing was not confirmed.' }
+          Copy-Item -LiteralPath $signed -Destination dist/SwitchMyAudio.exe -Force
+          ./Release.ps1 -SkipBuild -RequireSignedApp
+      - name: Upload installer for signing
+        if: env.SIGNPATH_ENABLED == 'true'
+        id: unsigned-setup
+        uses: actions/upload-artifact@v7
+        with:
+          name: unsigned-setup
+          path: release/*-Setup.exe
+          if-no-files-found: error
+      - name: Sign installer
+        if: env.SIGNPATH_ENABLED == 'true'
+        uses: signpath/github-action-submit-signing-request@v3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: ${{ vars.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ vars.SIGNPATH_SIGNING_POLICY_SLUG }}
+          artifact-configuration-slug: ${{ vars.SIGNPATH_SETUP_ARTIFACT_SLUG }}
+          github-artifact-id: ${{ steps.unsigned-setup.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 1800
+          output-artifact-directory: signed-setup
+      - name: Verify signed downloads and refresh their checksums
+        if: env.SIGNPATH_ENABLED == 'true'
+        shell: pwsh
+        run: |
+          $files = @(Get-ChildItem signed-setup -Filter '*-Setup.exe' -File)
+          if ($files.Count -ne 1 -or (Get-AuthenticodeSignature -LiteralPath $files[0].FullName).Status -ne 'Valid') { throw 'Installer signing was not confirmed.' }
+          $target = Join-Path release $files[0].Name
+          if (-not (Test-Path -LiteralPath $target)) { throw 'Unexpected signed installer name.' }
+          Copy-Item -LiteralPath $files[0].FullName -Destination $target -Force
+          ./tools/Update-ReleaseChecksums.ps1
+          ./tools/Test-Release.ps1 -RequireSigned
+      - name: Create draft with installer and portable download
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          $assets = @(Get-ChildItem release -File | ForEach-Object FullName)
+          $releaseArgs = @('--verify-tag','--draft','--title',"Switch My Audio $env:GITHUB_REF_NAME",'--notes-file','docs/RELEASE-NOTES.md')
+          if (([Version]($env:GITHUB_REF_NAME.TrimStart('v'))).Major -eq 0) { $releaseArgs += '--prerelease' }
+          gh release create $env:GITHUB_REF_NAME @assets @releaseArgs
+          if ($LASTEXITCODE -ne 0) { throw 'GitHub draft release creation failed.' }

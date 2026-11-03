@@ -1,0 +1,46 @@
+name: Build and test
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-2025]
+        platform: [anycpu, x86]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Privacy check
+        shell: pwsh
+        run: ./tools/Test-Privacy.ps1
+      - name: Build
+        shell: pwsh
+        run: ./Build.ps1 -Platform ${{ matrix.platform }}
+      - name: Regression tests
+        shell: pwsh
+        run: ./Test.ps1 -Platform ${{ matrix.platform }} -Stress
+      - name: Package
+        if: matrix.os == 'windows-2025' && matrix.platform == 'anycpu'
+        shell: pwsh
+        run: ./Release.ps1
+      - uses: actions/upload-artifact@v7
+        if: matrix.os == 'windows-2025' && matrix.platform == 'anycpu'
+        with:
+          name: SwitchMyAudio-Windows
+          path: release/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.platform }}
+          path: artifacts/test-results.txt
+          if-no-files-found: ignore

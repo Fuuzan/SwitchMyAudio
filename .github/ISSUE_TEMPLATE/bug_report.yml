@@ -1,0 +1,29 @@
+name: Bug report
+description: Report something that does not work as expected.
+body:
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      placeholder: 0.7.0
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version and processor type
+      description: For example, Windows 11 24H2 on Intel/AMD 64-bit, or Windows 10 22H2 32-bit.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: What happened?
+      description: Give the steps, what you expected and what happened instead. For audio connection problems, include the device model and connection type. Avoid serial numbers, personal device names, account names, local paths or your saved settings file.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or extra details
+      description: Optional. Check screenshots for personal information before attaching them.
