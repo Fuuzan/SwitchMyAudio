@@ -48,4 +48,9 @@ Quickly switch between audio devices and microphones on Windows.
 ## Closing, Updating & Privacy
 
 * **Minimizing to Tray:** Closing the main window keeps the app running in the system tray so your hotkeys stay active. 
-* **Quitting:** Right-click the tray icon and select **
+* **Quitting:** Right-click the tray icon and select **Quit** to exit completely. Always quit the app before installing an update.
+* **Privacy:** Settings are stored locally in `%LOCALAPPDATA%\SwitchMyAudio`. The app works completely offline with zero accounts or telemetry.
+
+---
+
+[Privacy Policy](docs/PRIVACY.md) · [Compatibility](docs/COMPATIBILITY.md) · [Release Notes](docs/RELEASE-NOTES.md)
