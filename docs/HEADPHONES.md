@@ -1,27 +1,20 @@
-# Headphone detection
+# Auto-switch headphones
 
-Auto-switch headphones selects a newly available headphone output when Windows reports a connection. It uses Windows' headphone/headset metadata first. A device's editable name, Bluetooth connection or USB connection alone is not enough: ordinary speakers use those connections too.
+This option is off by default. Enable **Auto-switch headphones** in Settings to prefer a headphone output when Windows detects a new connection.
 
-Windows may select headphones independently when this option is off. A wireless receiver that stays connected while the headset is powered off may not report a new connection when the headset wakes. A recognition rule cannot create a missing Windows event.
+Windows can also select headphones on its own when this option is off.
 
-## Receivers reported as speakers
+## If your headphones do not switch
 
-Some receivers expose a generic Speakers endpoint. Verified model rules supplement Windows metadata:
+1. Check that Windows shows the headphones as connected and available for playback.
+2. Confirm **Auto-switch headphones** is enabled and the app is running in the tray.
+3. Try selecting the device with **Use**. If that also fails, check the device in Windows Sound settings.
+4. For a USB wireless headset, try reconnecting the receiver. Some receivers stay connected while the headset is off, so powering on the headset may not create a new connection event.
 
-| Model | Shared USB identifier | Behavior |
-|---|---|---|
-| Audeze Maxwell receiver | `USB\VID_3329&PID_4B19` | Recognize headphone playback; prefer Game interface `MI_04` over Chat `MI_01` when both are available. |
+Some receivers appear as Speakers in Windows. The Audeze Maxwell receiver is recognized, with Game playback preferred over Chat when both are available.
 
-These vendor/product/interface identifiers are shared by a hardware model. They are not serial numbers or personal endpoint IDs. Detection remains automatic; no extra device-selection setting is required.
+## Report a detection problem
 
-## Report an unsupported receiver
+Use the **Headphone detection** form in GitHub Issues. Include the app and Windows versions, headset model, connection type and reconnect steps. Say whether the device disappears and returns in Windows Sound settings, and whether **Use** works.
 
-Use the **Headphone detection** issue form on GitHub. Include the app version, Windows version, headset model, connection type and exact reconnect steps. Say whether the output disappears and returns in Windows' Sound settings, and whether clicking **Use** works.
-
-If available, include only the shared `VID_####&PID_####` and optional `MI_##` portions from Device Manager → device Properties → Details → Hardware Ids. Do not paste a device instance path, serial number, endpoint GUID, saved settings or personal device name. You can leave the identifiers blank if unsure.
-
-## Contributing a recognition rule
-
-Keep verified model rules in `DeviceRules.KnownHeadphoneHardware` in `src/Model.cs`. Use an exact vendor/product boundary and an interface preference only when the interfaces are verified. Do not match generic USB/Bluetooth devices or user-editable names. Add regression checks for recognition, similar-but-different product IDs, interface ordering and ordinary speakers remaining unclassified.
-
-Current tests cover Maxwell Game/Chat ordering, partial-ID rejection, delayed endpoints, disconnect/reconnect and manual-selection precedence. Rules for other models need evidence from that hardware; unknown identifiers are not guessed.
+Shared USB vendor/product identifiers are optional. Do not include serial numbers, device instance paths, endpoint GUIDs, personal aliases or your settings file. Leave the identifier field blank if unsure.

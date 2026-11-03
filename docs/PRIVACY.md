@@ -1,23 +1,19 @@
-# Privacy and publication
+# Privacy
 
-The release source is a separate, deliberately assembled project. Earlier workspace screenshots, archives, crash/memory dumps, machine-specific audit reports, test outputs and local preferences are excluded.
+Switch My Audio works offline, without accounts, telemetry, advertising or background update downloads.
 
-## Runtime data
+## Data stored on your PC
 
-Windows audio device names, endpoint IDs and hardware metadata are read locally to discover and select sources. Optional meters read peak values, without opening recording or loopback streams. Saved names, IDs, aliases, key bindings, options and window bounds stay in the current user's local application-data folder. No Windows account name, personal endpoint ID, computer name or local absolute path is hardcoded into the application. The public GitHub handle **Fuuzan** is intentionally credited in the MIT notice, README and assembly copyright metadata, at the author's request.
+The app reads Windows audio device information to display and select speakers, headphones and microphones. Device names, identifiers, aliases, shortcuts and window preferences are saved locally in:
 
-There are no network clients, telemetry, automatic uploaders or embedded credentials. Windows account identity is obtained at runtime only to scope the single-instance mutex to the current user; it is not logged or transmitted. The installer registers its current user's installation path and shortcut with Windows. This is local installation state, not bundled personal information.
+`%LOCALAPPDATA%\SwitchMyAudio`
 
-Public USB vendor/product recognition rules and Windows COM/property GUIDs are shared technical identifiers. They are not a particular person's endpoint IDs. Synthetic tests use example names and fake identifiers.
+This information is not uploaded. Level meters read sound activity values; they do not record audio.
 
-## Earlier QuietSwitch copies
+## Removing your settings
 
-Compatibility with the earlier app name is retained. If Switch My Audio has no settings file, first launch can copy readable preferences from the same user's local QuietSwitch folder. Existing Switch My Audio settings take priority, and the original file is kept. Startup registration removes the old QuietSwitch entry when applying the new entry. Setup asks you to quit an earlier running copy so two apps do not compete for shortcuts or audio switching. None of these checks contacts a server or bundles old user preferences.
+Uninstalling the app keeps your preferences. To reset everything, quit the app from its tray menu and delete the settings folder above.
 
-## Publication checks
+## Reporting an issue
 
-`tools/Test-Privacy.ps1` scans publishable text for personal absolute paths, email addresses, the current account name, common API-token/private-key patterns and accidentally bundled settings/key/dump files. `Release.ps1` uses explicit source and binary file lists, not the surrounding workspace. No debug symbols are shipped. PNG/ICO metadata and executable strings were also inspected for the current release.
-
-This check reduces accidental disclosure; pattern matching cannot prove that arbitrary future edits contain no personal details. Review future screenshots, release notes and Git commit author details before publishing. This project has no Git history yet, so no personal commit metadata is included in the source ZIP.
-
-Do not attach your settings XML or raw diagnostic output to a public issue without inspecting it. Device names can contain aliases chosen by the user.
+Avoid attaching your settings file, device serial numbers or personal device names. Check screenshots for private information before posting them publicly.

@@ -21,7 +21,7 @@ Quickly switch between audio devices and microphones on Windows.
 
 * **Portable Version:** Extract all files from `portable.zip` into a single folder and run `SwitchMyAudio.exe`.
 * **System Requirements:** Windows 10 or 11 (Intel/AMD) and .NET Framework 4.8+.
-* **SmartScreen Notice:** If Windows displays "Windows protected your PC", click **More info** → **Run anyway**. Always verify downloads using the project's SHA-256 checksums.
+* **SmartScreen Notice:** Downloads are unsigned, so Windows may show "Windows protected your PC". Check the project's SHA-256 checksums and continue only if you trust the download.
 
 ---
 
