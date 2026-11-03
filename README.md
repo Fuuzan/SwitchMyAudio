@@ -1,52 +1,51 @@
 # Switch My Audio
 
-Quickly switch between speakers, headphones and microphones on Windows.
+Quickly switch between audio devices and microphones on Windows.
 
-**v0.7.0 public beta** · Free and open source · By [Fuuzan](https://github.com/Fuuzan) · [MIT license](LICENSE)
+**v0.7.0** · Free & Open Source · Created by [Fuuzan](https://github.com/Fuuzan) · [MIT License](LICENSE)
+
+---
 
 ## Screenshots
 
-Demo devices and example settings are shown; no personal device information is included.
+| Main Window (Dark Mode) | Pinned Mini-Window |
+| :---: | :---: |
+| ![Main window in dark mode](docs/images/main-dark.png) | ![Compact pinned window](docs/images/pinned-both-dark.png) |
 
-![Main window in dark mode](docs/images/main-dark.png)
+---
 
-![Compact pinned window with playback and microphones](docs/images/pinned-both-dark.png)
+## Get Started
 
-## Get started
+1. **Download:** Get `Setup.exe` from the [Releases](https://github.com/Fuuzan/SwitchMyAudio/releases) page, open it, click **Install**, and then **Open app**.
+2. **Launch Later:** Search for **Switch My Audio** in your Windows Start menu, or find its icon in the system tray near the clock (check the hidden `^` arrow if needed).
 
-1. **Install:** download the **Setup.exe** file from this project's **Releases** page. Open it, click **Install**, then **Open app**.
-2. **Run again:** open the Windows **Start** menu, search for **Switch My Audio** and select it.
+* **Portable Version:** Extract all files from `portable.zip` into a single folder and run `SwitchMyAudio.exe`.
+* **System Requirements:** Windows 10 or 11 (Intel/AMD) and .NET Framework 4.8+.
+* **SmartScreen Notice:** If Windows displays "Windows protected your PC", click **More info** → **Run anyway**. Always verify downloads using the project's SHA-256 checksums.
 
-**Portable version:** extract all files from **portable.zip** into a folder and run **SwitchMyAudio.exe**. Keep all files together; use that EXE to run it again.
+---
 
-If the app is already running, click its icon in the **system tray** beside the clock (check the hidden-icons arrow).
+## How to Use
 
-**Requirements:** Windows 10/11 (Intel/AMD) and .NET Framework 4.8 or later. Windows 11 ARM64 emulation is untested on physical ARM hardware. [Compatibility details](docs/COMPATIBILITY.md).
+* **Switch Devices:** Open the **Playback** or **Microphones** tab and click **Use** next to any device.
+* **Global Hotkeys:** Click **Set shortcut** and press any key combination to switch instantly from anywhere. Click the field again and choose **Clear shortcut** to remove it.
+* **Cycle Devices:** Check **Cycle** on two or more devices in a tab, then assign a hotkey next to **Cycle selected sources** to toggle through them sequentially.
+* **Rename Devices:** Hover over any device name and click **Rename** (`Enter` to save, `Esc` to cancel).
+* **Compact Pin Mode:** Click **Pin** for a small, always-on-top window. Drag to move or resize it. Click **Unpin** (or press `Esc`) to restore.
+* **Reorder & Hide:** Go to **Settings → Devices** to drag or arrow-key reorder your devices (which also sets your cycle order) or toggle them visible/hidden.
 
-**Unsigned download warning:** Windows may show **Windows protected your PC** or **Unknown publisher**. Download only from this project's Releases page and check the included SHA-256 checksums. If you trust the download, **More info → Run anyway** may be available. [Code signing status](docs/CODE-SIGNING.md).
-
-## How to use
-
-- **Switch audio:** open **Playback** or **Microphones** and click **Use** beside a device. Playback and microphone choices are independent.
-- **Direct shortcuts:** click **Set shortcut** and press a key or combination to switch to that device from anywhere. Click the shortcut field again and choose **Clear shortcut** to remove it.
-- **Cycle devices:** check **Cycle** on at least two devices in the same tab, then set a shortcut beside **Cycle selected sources**. Each press selects the next available checked device.
-- **Rename devices:** hover over a device name and click **Rename**. Press Enter to save or Escape to cancel. Names change only in this app.
-- **Compact pin mode:** click **Pin** for a small, always-on-top window. Drag to move it or drag an edge to resize. Click **Unpin** or press Escape to return.
-- **Reorder & hide:** in **Settings → Devices**, drag the grip or use the arrows to reorder devices. This also sets the cycling order. Use the toggles to show or hide devices.
+---
 
 ## Settings
 
-- **Start with Windows:** on by default; launches quietly when you sign in.
-- **Appearance & pinning:** follows your Windows theme by default. Choose another theme and which sources appear when pinned.
-- **Level meters:** off by default. Enable them to show live sound activity; no audio is recorded.
-- **Auto-switch headphones:** off by default. Enable it to prefer newly detected headphones. Windows may still switch devices on its own when this is off. Some wireless USB receivers stay connected while the headset is off, so detection can vary. [Detection help and reports](docs/HEADPHONES.md).
+* **Start with Windows:** Launches the app quietly in the background when you sign in.
+* **Appearance & Pinning:** Choose a color theme and select which sources stay visible when pinned.
+* **Level Meters:** Displays real-time audio activity (100% local; no audio is recorded).
+* **Auto-switch Headphones:** Automatically prioritizes newly plugged-in headphones. *(Note: Windows may still switch devices natively on its own, and wireless USB dongles often stay connected even when the headset is turned off).*
 
-## Closing, updates & privacy
+---
 
-- **Close or quit:** closing the window sends the app to the system tray so shortcuts keep working. To exit completely, right-click the tray icon and select **Quit**.
-- **Updating:** run the new installer. For portable copies, quit from the tray before replacing files. Your settings are kept.
-- **Privacy & storage:** preferences stay in `%LOCALAPPDATA%\SwitchMyAudio`. Works offline, with no accounts or telemetry.
+## Closing, Updating & Privacy
 
-Apps with their own audio-device selection may need their output changed separately.
-
-[Privacy](docs/PRIVACY.md) · [Build and release guide](docs/RELEASING.md) · [Release notes](docs/RELEASE-NOTES.md) · [Tested behavior and limits](docs/VERIFICATION.md)
+* **Minimizing to Tray:** Closing the main window keeps the app running in the system tray so your hotkeys stay active. 
+* **Quitting:** Right-click the tray icon and select **
